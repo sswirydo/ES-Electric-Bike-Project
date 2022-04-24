@@ -10,9 +10,63 @@ const
 ---------------------------------------------------------------------
 
 -- task L1
+node LongDropCounter(x:bool) returns (c:int);
+var prev_c:int;
+let
+  prev_c = 0 -> pre c;
+  c = (if x then 0
+            else if not x then (prev_c + 1)
+            else prev_c);
+tel
+
+
+-- private to the ShortDrop node
+-- counts number of 'time' units since UP is false
+node ShortCounter(x:bool) returns (c:int);
+var prev_c:int;
+let
+  prev_c = 0 -> pre c;
+  c = (if x then 0
+            else if not x then (prev_c + 1)
+            else prev_c);
+tel
+
+node ShortDrop(x:bool) returns (y:bool);
+var can_short:bool;
+let
+  can_short = ShortCounter(x) mod 2 = 0; -- note: second "=" is for equality, not assignement
+
+  -- we check if i and i-1 of UP are false, 
+  -- if so, set the shortDrop to true iff we didn't have a short drop before (modulo)
+  y = ( if not x and not (true->pre(x)) then can_short 
+        else false
+  ); 
+tel
+
+-- counts the number of ShortDrops encountered during program execution
+node ShortDropCounter(x:bool) returns (c:int);
+var prev_c:int;
+let
+  prev_c = 0 -> pre c;
+  c = (if ShortDrop(x) then (prev_c + 1)
+        else prev_c);
+tel
+
 node ConnectionAlarm(up:bool) returns (alarm:bool);
 let
-  alarm = false;
+
+  -- Two conditions:
+  -- a) The number of “short drops” is ≥ 7. A short drop is a loss of communication (UP is false) lasting ≥ 2 steps.
+  -- b) A “long drop” happens. A long drop is an absence of UP lasting ≥ 10 steps
+
+  -- alarm = (if LongDropCounter(up) >= 10 then true
+  --           else if ShortCounter(ShortDrop(up)) >= 7 then true
+  --           else false;
+
+  alarm = (if ShortDropCounter(up) >= 3 then true
+            else false
+  );
+
 tel
 
 -- task L2
