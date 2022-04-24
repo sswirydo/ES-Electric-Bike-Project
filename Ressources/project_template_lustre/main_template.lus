@@ -63,11 +63,13 @@ let
   --           else if ShortCounter(ShortDrop(up)) >= 7 then true
   --           else false;
 
-  alarm = (if ShortDropCounter(up) >= 3 then true
+  alarm = ( if false->pre(alarm) = true then true -- ensures alarm stays ON once set
+            else if ShortDropCounter(up) >= 7 then true -- looks for 7 short drops of 2 units
+            else if LongDropCounter(up) >= 10 then true -- looks for 1 long drop of 10 units
             else false
   );
-
 tel
+
 
 -- task L2
 node BrakeCableActuator(brk:real; up:bool) returns (clinch:bool);
