@@ -34,7 +34,7 @@ tel
 node ShortDrop(x:bool) returns (y:bool);
 var can_short:bool;
 let
-  can_short = ShortCounter(x) mod 2 = 0; -- note: second "=" is for equality, not assignement
+  can_short = ShortCounter(x) mod SHORT_DROP_NUM = 0; -- note: second "=" is for equality, not assignement
 
   -- we check if i and i-1 of UP are false, 
   -- if so, set the shortDrop to true iff we didn't have a short drop before (modulo)
@@ -64,8 +64,8 @@ let
   --           else false;
 
   alarm = ( if false->pre(alarm) = true then true -- ensures alarm stays ON once set
-            else if ShortDropCounter(up) >= 7 then true -- looks for 7 short drops of 2 units
-            else if LongDropCounter(up) >= 10 then true -- looks for 1 long drop of 10 units
+            else if ShortDropCounter(up) >= MAX_NOF_SHORT_DROPS then true -- looks for 7 short drops of 2 units
+            else if LongDropCounter(up) >= LONG_DROP_NUM then true -- looks for 1 long drop of 10 units
             else false
   );
 tel
@@ -74,7 +74,13 @@ tel
 -- task L2
 node BrakeCableActuator(brk:real; up:bool) returns (clinch:bool);
 let
-  clinch = false;
+  -- brk = 0 --> NO BREAK
+  -- brk in (0; BRK_SOFT] --> SOFT BREAK
+  -- brk >BRK_SOFT --> HARD BREAK
+  clinch = (  if ConnectionAlarm(up) and (brk <= real(1.0) and brk > real(0.0)) then true -- SOFT BREAK + ALARM
+              else if brk > real(1.0) then true -- HARD BREAK
+              else false
+  );
 tel
 
 -- task L3
