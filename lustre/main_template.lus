@@ -74,7 +74,7 @@ tel
 -- task L3
 node LossyChannel(noise,brk:real; up:bool) returns (brk_rcvd:real);
 let
-  bck_rcvd = (if up then brk else noise);
+  brk_rcvd = (if up then brk else noise);
 tel
 
 -- task L4
@@ -83,12 +83,12 @@ var
   assist_allowed:bool;
   regen_allowed:bool;
 let
-  assist_allowed = (if (ConnectionAlarm(up) then false
+  assist_allowed = (if ConnectionAlarm(up) then false
                     else if speed > MAX_SPEED then false
                     else if battery = 0.0 then false
                     else true
   );
-  regen_allowed = ( if (ConnectionAlarm(up) then false
+  regen_allowed = ( if ConnectionAlarm(up) then false
                     else if not up then false
                     else true
   );
@@ -103,35 +103,24 @@ node System(up:bool; noise,brk,human,speed,battery:real) returns (clinch:bool; a
 var
   alarm:bool;
   brk_rcvd:real;
+  temp_assist:real;
 let
-  clinch = BrakeCableActuator(brk,up);
+  -- clinch = BrakeCableActuator(brk,up);
   brk_rcvd = LossyChannel(noise,brk,up);
-  asst_lvl = MotorController(brk_rcvd,up,human,speed,battery);
+  -- asst_lvl = MotorController(brk_rcvd,up,human,speed,battery);
   alarm = ConnectionAlarm(up);
 
-  clinch = (if alarm and (brk_rcvd > 0.0) then true
-            else clinch
+  clinch = (if alarm and (brk_rcvd > 0.0) then true -- todo not sure if this should be brk_rcvd or brk
+            else BrakeCableActuator(brk,up)
   );
 
-  asst_lvl = (  if alarm and asst_lvl < 0.0 then 0.0
-                else asst_lvl
+  temp_assist = MotorController(brk_rcvd,up,human,speed,battery);
+  asst_lvl = (  if alarm and (temp_assist < 0.0) then 0.0
+                else if (temp_assist < 0.0) and (brk <= 0.0) then 0.0
+                else if (speed > MAX_SPEED) and (temp_assist > 0.0) then 0.0
+                else if not (temp_assist = 0.0) and not (temp_assist = -brk) and not (temp_assist = human) then 0.0
+                else if (brk > 0.0) and (temp_assist > 0.0) and up and (not alarm) then -brk
+                else temp_assist
   );
-
-  asst_lvl = (  if asst_lvl < 0.0 and brk <= 0.0 then 0.0
-                else asst_lvl
-  );
-
-  asst_lvl = (  if speed > MAX_SPEED and asst_lvl > 0.0 then 0.0
-                else asst_lvl
-  );
-
-  asst_lvl = (  if (asst_lvl = 0.0) or (asst_lvl = -brk) or (asst_lvl = human) then asst_lvl
-                else asst_lvl = 0.0
-  );
-
-  -- ! todo
-  -- if the braking and assisting are both requested at the same time and the connection
-  --is up and there is no alarm, then the motor should engage the regenerative braking
 
 tel
-
