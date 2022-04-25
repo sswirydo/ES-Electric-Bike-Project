@@ -10,44 +10,42 @@ const
 ---------------------------------------------------------------------
 
 -- task L1
-node LongDropCounter(x:bool) returns (c:int);
-var prev_c:int;
-let
-  prev_c = 0 -> pre c;
-  c = (if x then 0
-            else if not x then (prev_c + 1)
-            else prev_c);
-tel
 
 -- private to the ShortDrop node
 -- counts number of 'time' units since UP is false
-node ShortCounter(x:bool) returns (c:int);
-var prev_c:int;
+node ShortCounter(up:bool) returns (count:int);
 let
-  prev_c = 0 -> pre c;
-  c = (if x then 0
-            else if not x then (prev_c + 1)
-            else prev_c);
+  count = ( if up then 0
+            else if not up then (0 -> pre(count) + 1)
+            else 0 -> pre(count)
+  );
 tel
 
-node ShortDrop(x:bool) returns (y:bool);
+node ShortDrop(up:bool) returns (drop:bool);
 var can_short:bool;
 let
-  can_short = ShortCounter(x) mod SHORT_DROP_NUM = 0; -- note: second "=" is for equality, not assignement
+  can_short = ShortCounter(up) mod SHORT_DROP_NUM = 0;
   -- we check if i and i-1 of UP are false, 
   -- if so, set the shortDrop to true iff we didn't have a short drop before (modulo)
-  y = ( if not x and not (true->pre(x)) then can_short 
-        else false
+  drop = (  if not up and not (true->pre(up)) then can_short 
+            else false
   ); 
 tel
 
 -- counts the number of ShortDrops encountered during program execution
-node ShortDropCounter(x:bool) returns (c:int);
-var prev_c:int;
+node ShortDropCounter(up:bool) returns (count:int);
 let
-  prev_c = 0 -> pre c;
-  c = (if ShortDrop(x) then (prev_c + 1)
-        else prev_c);
+  count = ( if ShortDrop(up) then (0->pre(count) + 1)
+            else 0->pre(count)
+  );
+tel
+
+node LongDropCounter(up:bool) returns (count:int);
+let
+  count = ( if up then 0
+            else if not up then (0->pre(count) + 1)
+            else 0->pre(count)
+  );
 tel
 
 node ConnectionAlarm(up:bool) returns (alarm:bool);
@@ -60,6 +58,18 @@ let
   --%PROPERTY (false->pre(alarm) = true) => (alarm = true);
   --%PROPERTY (ShortDropCounter(up) >= MAX_NOF_SHORT_DROPS) => (alarm = true);
   --%PROPERTY (LongDropCounter(up) >= LONG_DROP_NUM) => (alarm = true);
+tel
+
+-- COPY OF THE ConnectionAlarm FOR THE DIAGRAM TASK (+= short/long flags)
+node ConnectionAlarmWithFlags(up:bool) returns (alarm:bool; short:bool; long:bool);
+let
+  alarm = ( if false->pre(alarm) = true then true
+            else if ShortDropCounter(up) >= MAX_NOF_SHORT_DROPS then true
+            else if LongDropCounter(up) >= LONG_DROP_NUM then true
+            else false
+  );
+  short = ShortDrop(up);
+  long = (not up) and LongDropCounter(up) mod LONG_DROP_NUM = 0;
 tel
 
 -- task L2

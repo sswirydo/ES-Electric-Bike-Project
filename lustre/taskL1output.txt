@@ -1,0 +1,20 @@
+
+==============================================================================================================================
+Analyzing ConnectionAlarm
+  with First top: 'ConnectionAlarm'
+             subsystems
+               | concrete: ShortDropCounter, ShortDrop, ShortCounter, LongDropCounter
+
+<Success> Property ((LongDropCounter(up) >= LONG_DROP_NUM) => (alarm = true)) is valid by property directed reachability after 0.082s.
+
+<Success> Property ((ShortDropCounter(up) >= MAX_NOF_SHORT_DROPS) => (alarm = true)) is valid by property directed reachability after 0.082s.
+
+<Success> Property ((false -> ((pre alarm) = true)) => (alarm = true)) is valid by property directed reachability after 0.082s.
+
+------------------------------------------------------------------------------------------------------------------------------
+Summary of properties:
+------------------------------------------------------------------------------------------------------------------------------
+((LongDropCounter(up) >= LONG_DROP_NUM) => (alarm = true)): valid (at 1)
+((ShortDropCounter(up) >= MAX_NOF_SHORT_DROPS) => (alarm = true)): valid (at 1)
+((false -> ((pre alarm) = true)) => (alarm = true)): valid (at 1)
+==============================================================================================================================

@@ -1,0 +1,104 @@
+
+==============================================================================================================================
+Analyzing System
+  with First top: 'System'
+             subsystems
+               | concrete: ShortDropCounter, ShortDrop, ShortCounter, MotorController, LossyChannel, LongDropCounter,
+                           ConnectionAlarm, BrakeCableActuator
+
+<Success> Property (((asst_lvl = 0.0) or (asst_lvl = (- brk))) or (asst_lvl = human)) is valid by inductive step after 0.144s.
+
+<Success> Property ((speed > MAX_SPEED) => (asst_lvl <= 0.0)) is valid by inductive step after 0.144s.
+
+<Success> Property ((asst_lvl < 0.0) => (brk > 0.0)) is valid by inductive step after 0.144s.
+
+<Success> Property ((alarm = true) => (asst_lvl >= 0.0)) is valid by inductive step after 0.144s.
+
+<Success> Property ConnectionAlarm[l135c11].((false -> ((pre alarm) = true)) => (alarm = true)) is valid by inductive step after 0.144s.
+
+<Success> Property ConnectionAlarm[l135c11].((ShortDropCounter(up) >= MAX_NOF_SHORT_DROPS) => (alarm = true)) is valid by inductive step after 0.144s.
+
+<Success> Property ConnectionAlarm[l135c11].((LongDropCounter(up) >= LONG_DROP_NUM) => (alarm = true)) is valid by inductive step after 0.144s.
+
+<Success> Property LossyChannel[l134c14].((not up) => (brk_rcvd = noise)) is valid by inductive step after 0.144s.
+
+<Success> Property LossyChannel[l134c14].(up => (brk_rcvd = brk)) is valid by inductive step after 0.144s.
+
+<Success> Property BrakeCableActuator[l138c18].ConnectionAlarm[l78c18].((LongDropCounter(up) >= LONG_DROP_NUM) => (alarm = true)) is valid by inductive step after 0.144s.
+
+<Success> Property BrakeCableActuator[l138c18].ConnectionAlarm[l78c18].((ShortDropCounter(up) >= MAX_NOF_SHORT_DROPS) => (alarm = true)) is valid by inductive step after 0.144s.
+
+<Success> Property BrakeCableActuator[l138c18].ConnectionAlarm[l78c18].((false -> ((pre alarm) = true)) => (alarm = true)) is valid by inductive step after 0.144s.
+
+<Success> Property BrakeCableActuator[l138c18].((clinch = true) => (brk <> 0.0)) is valid by inductive step after 0.144s.
+
+<Success> Property BrakeCableActuator[l138c18].((((brk > 0.0) and (brk <= BRK_SOFT)) and (not ConnectionAlarm(up))) =>
+  (clinch = false)) is valid by inductive step after 0.144s.
+
+<Success> Property BrakeCableActuator[l138c18].((((brk > 0.0) and (brk <= BRK_SOFT)) and ConnectionAlarm(up)) =>
+  (clinch = true)) is valid by inductive step after 0.144s.
+
+<Success> Property BrakeCableActuator[l138c18].(((brk > BRK_SOFT) and ConnectionAlarm(up)) => (clinch = true)) is valid by inductive step after 0.144s.
+
+<Success> Property BrakeCableActuator[l138c18].(((brk > BRK_SOFT) and (not ConnectionAlarm(up))) => (clinch = true)) is valid by inductive step after 0.144s.
+
+<Success> Property MotorController[l141c17].ConnectionAlarm[l104c24].((LongDropCounter(up) >= LONG_DROP_NUM) => (alarm = true)) is valid by inductive step after 0.144s.
+
+<Success> Property MotorController[l141c17].ConnectionAlarm[l104c24].((ShortDropCounter(up) >= MAX_NOF_SHORT_DROPS) => (alarm = true)) is valid by inductive step after 0.144s.
+
+<Success> Property MotorController[l141c17].ConnectionAlarm[l104c24].((false -> ((pre alarm) = true)) => (alarm = true)) is valid by inductive step after 0.144s.
+
+<Success> Property MotorController[l141c17].((not up) => (regen_allowed = false)) is valid by inductive step after 0.144s.
+
+<Success> Property MotorController[l141c17].((speed > MAX_SPEED) => (assist_allowed = false)) is valid by inductive step after 0.144s.
+
+<Success> Property MotorController[l141c17].((battery = 0.0) => (assist_allowed = false)) is valid by inductive step after 0.144s.
+
+<Success> Property MotorController[l141c17].(((regen_allowed = true) and (assist_allowed = false)) =>
+  (asst_lvl = (- brk_rcvd))) is valid by inductive step after 0.144s.
+
+<Success> Property MotorController[l141c17].(((regen_allowed = false) and (assist_allowed = true)) => (asst_lvl = human)) is valid by inductive step after 0.144s.
+
+<Success> Property MotorController[l141c17].((((brk_rcvd = 0.0) and (assist_allowed = true)) and (regen_allowed = true)) =>
+  (asst_lvl = human)) is valid by inductive step after 0.144s.
+
+<Success> Property ((((brk > 0.0) and (alarm = false)) and (up = true)) => (asst_lvl < 0.0)) is valid by property directed reachability after 4.250s.
+
+<Success> Property (((alarm = true) and (brk > 0.0)) => (clinch = true)) is valid by property directed reachability after 4.250s.
+
+------------------------------------------------------------------------------------------------------------------------------
+Summary of properties:
+------------------------------------------------------------------------------------------------------------------------------
+((((brk > 0.0) and (alarm = false)) and (up = true)) => (asst_lvl < 0.0)): valid (at 1)
+(((asst_lvl = 0.0) or (asst_lvl = (- brk))) or (asst_lvl = human)): valid (at 1)
+((speed > MAX_SPEED) => (asst_lvl <= 0.0)): valid (at 1)
+((asst_lvl < 0.0) => (brk > 0.0)): valid (at 1)
+((alarm = true) => (asst_lvl >= 0.0)): valid (at 1)
+(((alarm = true) and (brk > 0.0)) => (clinch = true)): valid (at 1)
+ConnectionAlarm[l135c11].((false -> ((pre alarm) = true)) => (alarm = true)): valid (at 1)
+ConnectionAlarm[l135c11].((ShortDropCounter(up) >= MAX_NOF_SHORT_DROPS) => (alarm = true)): valid (at 1)
+ConnectionAlarm[l135c11].((LongDropCounter(up) >= LONG_DROP_NUM) => (alarm = true)): valid (at 1)
+LossyChannel[l134c14].((not up) => (brk_rcvd = noise)): valid (at 1)
+LossyChannel[l134c14].(up => (brk_rcvd = brk)): valid (at 1)
+BrakeCableActuator[l138c18].ConnectionAlarm[l78c18].((LongDropCounter(up) >= LONG_DROP_NUM) => (alarm = true)): valid (at 1)
+BrakeCableActuator[l138c18].ConnectionAlarm[l78c18].((ShortDropCounter(up) >= MAX_NOF_SHORT_DROPS) => (alarm = true)): valid (at 1)
+BrakeCableActuator[l138c18].ConnectionAlarm[l78c18].((false -> ((pre alarm) = true)) => (alarm = true)): valid (at 1)
+BrakeCableActuator[l138c18].((clinch = true) => (brk <> 0.0)): valid (at 1)
+BrakeCableActuator[l138c18].((((brk > 0.0) and (brk <= BRK_SOFT)) and (not ConnectionAlarm(up))) =>
+  (clinch = false)): valid (at 1)
+BrakeCableActuator[l138c18].((((brk > 0.0) and (brk <= BRK_SOFT)) and ConnectionAlarm(up)) =>
+  (clinch = true)): valid (at 1)
+BrakeCableActuator[l138c18].(((brk > BRK_SOFT) and ConnectionAlarm(up)) => (clinch = true)): valid (at 1)
+BrakeCableActuator[l138c18].(((brk > BRK_SOFT) and (not ConnectionAlarm(up))) => (clinch = true)): valid (at 1)
+MotorController[l141c17].ConnectionAlarm[l104c24].((LongDropCounter(up) >= LONG_DROP_NUM) => (alarm = true)): valid (at 1)
+MotorController[l141c17].ConnectionAlarm[l104c24].((ShortDropCounter(up) >= MAX_NOF_SHORT_DROPS) => (alarm = true)): valid (at 1)
+MotorController[l141c17].ConnectionAlarm[l104c24].((false -> ((pre alarm) = true)) => (alarm = true)): valid (at 1)
+MotorController[l141c17].((not up) => (regen_allowed = false)): valid (at 1)
+MotorController[l141c17].((speed > MAX_SPEED) => (assist_allowed = false)): valid (at 1)
+MotorController[l141c17].((battery = 0.0) => (assist_allowed = false)): valid (at 1)
+MotorController[l141c17].(((regen_allowed = true) and (assist_allowed = false)) =>
+  (asst_lvl = (- brk_rcvd))): valid (at 1)
+MotorController[l141c17].(((regen_allowed = false) and (assist_allowed = true)) => (asst_lvl = human)): valid (at 1)
+MotorController[l141c17].((((brk_rcvd = 0.0) and (assist_allowed = true)) and (regen_allowed = true)) =>
+  (asst_lvl = human)): valid (at 1)
+==============================================================================================================================

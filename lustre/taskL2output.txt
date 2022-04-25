@@ -1,0 +1,39 @@
+
+==============================================================================================================================
+Analyzing BrakeCableActuator
+  with First top: 'BrakeCableActuator'
+             subsystems
+               | concrete: ShortDropCounter, ShortDrop, ShortCounter, LongDropCounter, ConnectionAlarm
+
+<Success> Property (((brk > BRK_SOFT) and (not ConnectionAlarm(up))) => (clinch = true)) is valid by property directed reachability after 0.083s.
+
+<Success> Property (((brk > BRK_SOFT) and ConnectionAlarm(up)) => (clinch = true)) is valid by property directed reachability after 0.083s.
+
+<Success> Property ((((brk > 0.0) and (brk <= BRK_SOFT)) and ConnectionAlarm(up)) =>
+  (clinch = true)) is valid by property directed reachability after 0.083s.
+
+<Success> Property ((((brk > 0.0) and (brk <= BRK_SOFT)) and (not ConnectionAlarm(up))) =>
+  (clinch = false)) is valid by property directed reachability after 0.083s.
+
+<Success> Property ((clinch = true) => (brk <> 0.0)) is valid by property directed reachability after 0.083s.
+
+<Success> Property ConnectionAlarm[l78c18].((false -> ((pre alarm) = true)) => (alarm = true)) is valid by property directed reachability after 0.083s.
+
+<Success> Property ConnectionAlarm[l78c18].((ShortDropCounter(up) >= MAX_NOF_SHORT_DROPS) => (alarm = true)) is valid by property directed reachability after 0.083s.
+
+<Success> Property ConnectionAlarm[l78c18].((LongDropCounter(up) >= LONG_DROP_NUM) => (alarm = true)) is valid by property directed reachability after 0.083s.
+
+------------------------------------------------------------------------------------------------------------------------------
+Summary of properties:
+------------------------------------------------------------------------------------------------------------------------------
+(((brk > BRK_SOFT) and (not ConnectionAlarm(up))) => (clinch = true)): valid (at 1)
+(((brk > BRK_SOFT) and ConnectionAlarm(up)) => (clinch = true)): valid (at 1)
+((((brk > 0.0) and (brk <= BRK_SOFT)) and ConnectionAlarm(up)) =>
+  (clinch = true)): valid (at 1)
+((((brk > 0.0) and (brk <= BRK_SOFT)) and (not ConnectionAlarm(up))) =>
+  (clinch = false)): valid (at 1)
+((clinch = true) => (brk <> 0.0)): valid (at 1)
+ConnectionAlarm[l78c18].((false -> ((pre alarm) = true)) => (alarm = true)): valid (at 1)
+ConnectionAlarm[l78c18].((ShortDropCounter(up) >= MAX_NOF_SHORT_DROPS) => (alarm = true)): valid (at 1)
+ConnectionAlarm[l78c18].((LongDropCounter(up) >= LONG_DROP_NUM) => (alarm = true)): valid (at 1)
+==============================================================================================================================
