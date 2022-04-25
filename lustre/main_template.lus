@@ -57,24 +57,31 @@ let
             else if LongDropCounter(up) >= LONG_DROP_NUM then true -- looks for 1 long drop of 10 units
             else false
   );
+  --%PROPERTY (false->pre(alarm) = true) => (alarm = true);
+  --%PROPERTY (ShortDropCounter(up) >= MAX_NOF_SHORT_DROPS) => (alarm = true);
+  --%PROPERTY (LongDropCounter(up) >= LONG_DROP_NUM) => (alarm = true);
 tel
 
 -- task L2
 node BrakeCableActuator(brk:real; up:bool) returns (clinch:bool);
 let
-  -- brk = 0 --> NO BREAK
-  -- brk in (0; BRK_SOFT] --> SOFT BREAK
-  -- brk >BRK_SOFT --> HARD BREAK
   clinch = (  if ConnectionAlarm(up) and (brk <= BRK_SOFT and brk > real(0.0)) then true -- SOFT BREAK + ALARM
               else if brk > BRK_SOFT then true -- HARD BREAK
               else false
   );
+  --%PROPERTY (clinch = true) => (brk <> 0.0);
+  --%PROPERTY (brk > 0.0 and brk <= BRK_SOFT and not ConnectionAlarm(up)) => (clinch = false);
+  --%PROPERTY (brk > 0.0 and brk <= BRK_SOFT and ConnectionAlarm(up)) => (clinch = true);
+  --%PROPERTY (brk > BRK_SOFT and ConnectionAlarm(up)) => (clinch = true);
+  --%PROPERTY (brk > BRK_SOFT and not ConnectionAlarm(up)) => (clinch = true);
 tel
 
 -- task L3
 node LossyChannel(noise,brk:real; up:bool) returns (brk_rcvd:real);
 let
   brk_rcvd = (if up then brk else noise);
+  --%PROPERTY (not up) => (brk_rcvd = noise);
+  --%PROPERTY (up) => (brk_rcvd = brk);
 tel
 
 -- task L4
@@ -83,6 +90,7 @@ var
   assist_allowed:bool;
   regen_allowed:bool;
 let
+  -- * assumption: if both assist and regen are true then regen is prioritised (exception: brk_rcvd = 0.0)
   assist_allowed = (if ConnectionAlarm(up) then false
                     else if speed > MAX_SPEED then false
                     else if battery = 0.0 then false
@@ -92,10 +100,18 @@ let
                     else if not up then false
                     else true
   );
-  asst_lvl = (  if regen_allowed then -brk_rcvd
+  asst_lvl = (  if regen_allowed and assist_allowed and brk_rcvd = 0.0 then human
+                else if regen_allowed then -brk_rcvd
                 else if assist_allowed then human
                 else 0.0
   );
+  --%PROPERTY (not up) => (regen_allowed = false);
+  --%PROPERTY (speed > MAX_SPEED) => (assist_allowed = false);
+  --%PROPERTY (battery = 0.0) => (assist_allowed = false);
+  --%PROPERTY ((regen_allowed = true) and (assist_allowed = false)) => (asst_lvl = -brk_rcvd);
+  --%PROPERTY ((regen_allowed = false) and (assist_allowed = true)) => (asst_lvl = human);
+  --%PROPERTY ((brk_rcvd = 0.0) and (assist_allowed = true) and ((regen_allowed = true))) => (asst_lvl = human);
+
 tel
 
 -- task L5
@@ -105,12 +121,10 @@ var
   brk_rcvd:real;
   temp_assist:real;
 let
-  -- clinch = BrakeCableActuator(brk,up);
   brk_rcvd = LossyChannel(noise,brk,up);
-  -- asst_lvl = MotorController(brk_rcvd,up,human,speed,battery);
   alarm = ConnectionAlarm(up);
 
-  clinch = (if alarm and (brk_rcvd > 0.0) then true -- todo not sure if this should be brk_rcvd or brk
+  clinch = (if alarm and (brk_rcvd > 0.0) then true
             else BrakeCableActuator(brk,up)
   );
 
@@ -122,5 +136,13 @@ let
                 else if (brk > 0.0) and (temp_assist > 0.0) and up and (not alarm) then -brk
                 else temp_assist
   );
+
+  --%MAIN;
+  --%PROPERTY ((alarm = true) and (brk > 0.0)) => (clinch = true);
+  --%PROPERTY (alarm = true) => (asst_lvl >= 0.0);
+  --%PROPERTY (asst_lvl < 0.0) => (brk > 0.0);
+  --%PROPERTY (speed > MAX_SPEED) => (asst_lvl <= 0.0);
+  --%PROPERTY (asst_lvl = 0.0) or (asst_lvl = -brk) or (asst_lvl = human);
+  --%PROPERTY ((brk > 0.0) and (alarm = false) and (up = true)) => (asst_lvl < 0.0);
 
 tel
