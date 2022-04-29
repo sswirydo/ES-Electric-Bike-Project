@@ -1,0 +1,7 @@
+{
+  "assumptions": ["true"],
+  "guarantees": ["G(p -> F(gp))", "G(q -> F(gq))", "G(!(gp & gq))"], 
+  "input_atomic_propositions": ["p", "q"], 
+  "output_atomic_propositions": ["gp", "gq"],
+  "descrption_of_question": "Type the task/subtask/question from Strix that you are trying to solve here"
+}
