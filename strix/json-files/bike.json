@@ -1,0 +1,15 @@
+{
+    "assumptions": [
+        "G ( b -> X X !b) AND G ( (!b) -> X X b )"
+    ],
+    "guarantees": [
+      "G ( a & (!r) & (!i) ) OR G ( (!a) & r & (!i) ) OR G( (!a) & (!r) & i )",
+      "G ( a => i ) AND G ( r => i )",
+      "G ( b => F(r) ) AND G ( (!b) => F(a) )",
+      "G ( (b & r) => (r U (!b))) AND G ( ((!b) & a) => (a U b) )",
+      "G ( b -> X X X r )"
+    ], 
+    "input_atomic_propositions": ["b"], 
+    "output_atomic_propositions": ["a", "r", "i"],
+    "descrption_of_question": "Full bike."
+  }
