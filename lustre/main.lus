@@ -11,7 +11,9 @@ const
 
 ---------------------------------------------------------------------
 
--- task L1
+----------------------
+-- ::: TASK L1 ::: ---
+----------------------
 
 -- private to the ShortDrop node
 -- counts number of 'time' units since UP is false
@@ -74,7 +76,10 @@ let
   long = (not up) and LongDropCounter(up) mod LONG_DROP_NUM = 0;
 tel
 
--- task L2
+----------------------
+-- ::: TASK L2 ::: ---
+----------------------
+
 node BrakeCableActuator(brk:real; up:bool) returns (clinch:bool);
 let
   clinch = (  if ConnectionAlarm(up) and (brk <= BRK_SOFT and brk > real(0.0)) then true -- SOFT BREAK + ALARM
@@ -88,7 +93,10 @@ let
   --%PROPERTY (brk > BRK_SOFT and not ConnectionAlarm(up)) => (clinch = true);
 tel
 
--- task L3
+----------------------
+-- ::: TASK L3 ::: ---
+----------------------
+
 node LossyChannel(noise,brk:real; up:bool) returns (brk_rcvd:real);
 let
   brk_rcvd = (if up then brk else noise);
@@ -96,7 +104,10 @@ let
   --%PROPERTY (up) => (brk_rcvd = brk);
 tel
 
--- task L4
+----------------------
+-- ::: TASK L4 ::: ---
+----------------------
+
 node MotorController(brk_rcvd:real; up:bool; human,speed,battery:real) returns (asst_lvl:real);
 var 
   assist_allowed:bool;
@@ -123,10 +134,12 @@ let
   --%PROPERTY ((regen_allowed = true) and (assist_allowed = false)) => (asst_lvl = -brk_rcvd);
   --%PROPERTY ((regen_allowed = false) and (assist_allowed = true)) => (asst_lvl = human);
   --%PROPERTY ((brk_rcvd = 0.0) and (assist_allowed = true) and ((regen_allowed = true))) => (asst_lvl = human);
-
 tel
 
--- task L5
+----------------------
+-- ::: TASK L5 ::: ---
+----------------------
+
 node System(up:bool; noise,brk,human,speed,battery:real) returns (clinch:bool; asst_lvl:real);
 var
   alarm:bool;
@@ -156,5 +169,4 @@ let
   --%PROPERTY (speed > MAX_SPEED) => (asst_lvl <= 0.0);
   --%PROPERTY (asst_lvl = 0.0) or (asst_lvl = -brk) or (asst_lvl = human);
   --%PROPERTY ((brk > 0.0) and (alarm = false) and (up = true)) => (asst_lvl < 0.0);
-
 tel
