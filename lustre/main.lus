@@ -134,6 +134,7 @@ let
   --%PROPERTY ((regen_allowed = true) and (assist_allowed = false)) => (asst_lvl = -brk_rcvd);
   --%PROPERTY ((regen_allowed = false) and (assist_allowed = true)) => (asst_lvl = human);
   --%PROPERTY ((brk_rcvd = 0.0) and (assist_allowed = true) and ((regen_allowed = true))) => (asst_lvl = human);
+  --%PROPERTY ((brk_rcvd <> 0.0) and (assist_allowed = true) and ((regen_allowed = true))) => (asst_lvl = -brk_rcvd);
 tel
 
 ----------------------
