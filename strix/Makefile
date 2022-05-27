@@ -88,3 +88,16 @@ b2-2:
 	" \
 	--ins="b" \
 	--outs="a,r,i"
+
+b3-1:
+	./strix -f "() -> \
+	( \
+		(G( ( a & (!r) & (!i) ) OR ( (!a) & r & (!i) ) OR ( (!a) & (!r) & i ))) AND \
+		(G (a -> a U i) AND G (r -> r U i)) AND \
+		(G (b -> F(r)) AND G ((!b) -> F(a))) AND \
+		(G ( (b & r) -> ( r U (!b) ) )) AND \
+		(G ( (!b & a) -> ( a U (b) ) )) \
+	) \
+	" \
+	--ins="b" \
+	--outs="a,r,i"
