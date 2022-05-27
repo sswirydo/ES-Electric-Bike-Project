@@ -1,0 +1,23 @@
+echo "a2"
+a2
+./strix -f "true -> \
+( \
+	(G( ( a & (!r) & (!i) ) OR ( (!a) & r & (!i) ) OR ( (!a) & (!r) & i ))) AND \
+	(G (a -> a U i) AND G (r -> r U i)) \
+) \
+" \
+--ins="b" \
+--outs="a,r,i"
+REALIZABLE
+HOA: v1
+tool: "strix" "21.0.0"
+States: 1
+Start: 0
+AP: 4 "b" "a" "r" "i"
+controllable-AP: 1 2 3
+acc-name: all
+Acceptance: 0 t
+--BODY--
+State: 0 "[0]"
+[(t) & (!(1 | (2 | !3)))] 0
+--END--

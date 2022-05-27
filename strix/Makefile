@@ -51,7 +51,7 @@ b1-2a:
 		(G( ( a & (!r) & (!i) ) OR ( (!a) & r & (!i) ) OR ( (!a) & (!r) & i ))) AND \
 		(G (a -> a U i) AND G (r -> r U i)) AND \
 		(G (b -> F(r)) AND G ((!b) -> F(a))) AND \
-		(G (b -> X a)) \
+		(G (b -> X !a)) \
 	) \
 	" \
 	--ins="b" \
@@ -63,7 +63,7 @@ b1-2b:
 	( \
 		(G( ( a & (!r) & (!i) ) OR ( (!a) & r & (!i) ) OR ( (!a) & (!r) & i ))) AND \
 		(G (b -> F(r)) AND G ((!b) -> F(a))) AND \
-		(G (b -> X a)) \
+		(G (b -> X !a)) \
 	) \
 	" \
 	--ins="b" \

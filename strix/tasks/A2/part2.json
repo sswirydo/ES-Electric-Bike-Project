@@ -1,0 +1,11 @@
+{
+  "assumptions": ["true"],
+  "guarantees": [
+    "G( ( a & (!r) & (!i) ) OR ( (!a) & r & (!i) ) OR ( (!a) & (!r) & i ))",
+    "G (a -> a U i) AND G (r -> r U i)",
+    "G F (a) AND G F (r)"
+  ], 
+  "input_atomic_propositions": ["b"], 
+  "output_atomic_propositions": ["a", "r", "i"],
+  "descrption_of_question": ""
+}

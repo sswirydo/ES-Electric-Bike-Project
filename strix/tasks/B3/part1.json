@@ -1,0 +1,18 @@
+{
+  "assumptions": [
+    "G NOT (!b & (X b) & (X X b) & (X X X !b))",
+    "G NOT (!b & (X b) & (X X !b))",
+    "G NOT (b & (X !b) & (X X !b) & (X X X b))",
+    "G NOT (b & (X !b) & (X X b))"
+  ],
+  "guarantees": [
+    "G( ( a & (!r) & (!i) ) OR ( (!a) & r & (!i) ) OR ( (!a) & (!r) & i ))",
+    "G (a -> a W i) AND G (r -> r W i)",
+    "G (b -> F(r)) AND G ((!b) -> F(a))",
+    "G ( (b & r) -> ( r W (!b) ) )",
+    "G ( (!b & a) -> ( a W (b) ) )"
+  ], 
+  "input_atomic_propositions": ["b"], 
+  "output_atomic_propositions": ["a", "r", "i"],
+  "descrption_of_question": ""
+}
