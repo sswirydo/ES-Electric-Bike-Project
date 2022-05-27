@@ -22,7 +22,7 @@ a2-2:
 	( \
 		(G( ( a & (!r) & (!i) ) OR ( (!a) & r & (!i) ) OR ( (!a) & (!r) & i ))) AND \
 		(G (a -> a U i) AND G (r -> r U i)) AND \
-		G F (a) AND G F (r) \
+		(G F (a) AND G F (r)) \
 	) \
 	" \
 	--ins="b" \
@@ -33,7 +33,7 @@ b1-1:
 	( \
 		(G( ( a & (!r) & (!i) ) OR ( (!a) & r & (!i) ) OR ( (!a) & (!r) & i ))) AND \
 		(G (a -> a U i) AND G (r -> r U i)) AND \
-		G (b -> F(r)) AND G ((!b) -> F(a)) \
+		(G (b -> F(r)) AND G ((!b) -> F(a))) \
 	) \
 	" \
 	--ins="b" \
@@ -45,11 +45,46 @@ b1-2a:
 	( \
 		(G( ( a & (!r) & (!i) ) OR ( (!a) & r & (!i) ) OR ( (!a) & (!r) & i ))) AND \
 		(G (a -> a U i) AND G (r -> r U i)) AND \
-		G (b -> F(r)) AND G ((!b) -> F(a)) AND \
-		G (b -> X a) \
+		(G (b -> F(r)) AND G ((!b) -> F(a))) AND \
+		(G (b -> X a)) \
 	) \
 	" \
 	--ins="b" \
 	--outs="a,r,i"
 
-B1-2b:
+b1-2b:
+	./strix -f "true -> \
+	( \
+		(G( ( a & (!r) & (!i) ) OR ( (!a) & r & (!i) ) OR ( (!a) & (!r) & i ))) AND \
+		(G (b -> F(r)) AND G ((!b) -> F(a))) AND \
+		(G (b -> X a)) \
+	) \
+	" \
+	--ins="b" \
+	--outs="a,r,i"
+
+b2-1:
+	./strix -f "true -> \
+	( \
+		(G( ( a & (!r) & (!i) ) OR ( (!a) & r & (!i) ) OR ( (!a) & (!r) & i ))) AND \
+		(G (a -> a U i) AND G (r -> r U i)) AND \
+		(G (b -> F(r)) AND G ((!b) -> F(a))) AND \
+		(G ( (b & r) -> ( r U (!b) ) )) AND \
+		(G ( (!b & a) -> ( a U (b) ) )) \
+	) \
+	" \
+	--ins="b" \
+	--outs="a,r,i"
+
+b2-2:
+	./strix -f "((G F b) -> (G F NOT b) AND (G F NOT b) -> (G F b)) -> \
+	( \
+		(G( ( a & (!r) & (!i) ) OR ( (!a) & r & (!i) ) OR ( (!a) & (!r) & i ))) AND \
+		(G (a -> a U i) AND G (r -> r U i)) AND \
+		(G (b -> F(r)) AND G ((!b) -> F(a))) AND \
+		(G ( (b & r) -> ( r U (!b) ) )) AND \
+		(G ( (!b & a) -> ( a U (b) ) )) \
+	) \
+	" \
+	--ins="b" \
+	--outs="a,r,i"
