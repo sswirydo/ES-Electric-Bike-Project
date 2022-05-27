@@ -1,9 +1,3 @@
-echo "a1"
-a1
-./strix -f "true -> G( ( a & (!r) & (!i) ) OR ( (!a) & r & (!i) ) OR ( (!a) & (!r) & i ))" \
---ins="b" \
---outs="a,r,i"
-REALIZABLE
 HOA: v1
 tool: "strix" "21.0.0"
 States: 1

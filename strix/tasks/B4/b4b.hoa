@@ -1,20 +1,3 @@
-echo "b4b"
-b4b
-./strix -f "(G NOT (!b & (X b) & (X X !b)) AND \
-			G NOT (b & (X !b) & (X X b))) -> \
-( \
-	(G( ( a & (!r) & (!i) ) OR ( (!a) & r & (!i) ) OR ( (!a) & (!r) & i ))) AND \
-	(G (a -> a W i) AND G (r -> r W i)) AND \
-	(G (b -> F(r)) AND G ((!b) -> F(a))) AND \
-	(G ( (b & r) -> ( r W (!b) ) )) AND \
-	(G ( (!b & a) -> ( a W (b) ) )) AND \
-	(G (b -> (X r | X X r))) AND \
-	(G (!b -> (X a | X X a))) \
-) \
-" \
---ins="b" \
---outs="a,r,i"
-REALIZABLE
 HOA: v1
 tool: "strix" "21.0.0"
 States: 9
