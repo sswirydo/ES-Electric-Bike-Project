@@ -3,5 +3,5 @@
   "guarantees": ["G( ( a & (!r) & (!i) ) OR ( (!a) & r & (!i) ) OR ( (!a) & (!r) & i ))"], 
   "input_atomic_propositions": ["b"], 
   "output_atomic_propositions": ["a", "r", "i"],
-  "descrption_of_question": ""
+  "descrption_of_question": "TASK A1: REALIZABLE"
 }

@@ -6,5 +6,5 @@
   ], 
   "input_atomic_propositions": ["b"], 
   "output_atomic_propositions": ["a", "r", "i"],
-  "descrption_of_question": ""
+  "descrption_of_question": "TASK A2 PART 1: REALIZABLE"
 }

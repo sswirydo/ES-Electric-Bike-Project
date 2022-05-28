@@ -14,5 +14,5 @@
   ], 
   "input_atomic_propositions": ["b"], 
   "output_atomic_propositions": ["a", "r", "i"],
-  "descrption_of_question": ""
+  "descrption_of_question": "TASK B3 PART 1: REALIZABLE"
 }
